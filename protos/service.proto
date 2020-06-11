@@ -1,0 +1,29 @@
+syntax = "proto3";
+
+package grpc.chat;
+option go_package = "chat/proto";
+
+import "google/protobuf/timestamp.proto";
+import "google/protobuf/empty.proto";
+
+message User {
+    string id = 1;
+    string name = 2;
+}
+
+message Message {
+    string id = 1;
+    string content = 2;
+    User user = 3;
+    google.protobuf.Timestamp timestamp = 4;
+}
+
+message Connect {
+    User user = 1;
+    bool active = 2;
+}
+
+service GrpcChat {
+    rpc CreateStream (Connect) returns (stream Message);
+    rpc BroadcastMessage (Message) returns (google.protobuf.Empty);
+}
