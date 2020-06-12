@@ -13,7 +13,7 @@ func (s *GrpcChatServer) BroadcastMessage(ctx context.Context, msg *proto.Messag
 	logrus.Debug("Service broadcast message")
 	wait := sync.WaitGroup{}
 	done := make(chan int)
-
+	
 	for _, conn := range s.Connection {
 		wait.Add(1)
 

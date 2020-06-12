@@ -1,0 +1,15 @@
+version: "3"
+services:
+  proxy:
+    image: envoyproxy/envoy-dev
+    ports:
+      - 8080:51051
+    volumes:
+      - ./envoy-proxy.yaml:/etc/envoy/envoy.yaml
+    depends_on:
+      - grpc_chat
+
+  grpc_chat:
+    build: .
+    ports:
+      - 50051:50051

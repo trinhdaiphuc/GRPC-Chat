@@ -24,7 +24,7 @@ func main() {
 
 	logrus.SetLevel(logrus.DebugLevel)
 
-	listener, err := net.Listen("tcp", ":8080")
+	listener, err := net.Listen("tcp", ":50051")
 
 	if err != nil {
 		logrus.Fatal("error creating the server %v", err)
