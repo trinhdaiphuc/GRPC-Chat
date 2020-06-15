@@ -1,7 +1,8 @@
-import React from 'react';
+import React, {useContext} from 'react';
+import {GlobalContext} from "./Context";
 
-const MessageList = ({messages}) => {
-    console.log("Message ",messages)
+const MessageList = () => {
+    const {messages} = useContext(GlobalContext);
     return (
         <ul className="message-list">
             {messages?.map((message, index) => {

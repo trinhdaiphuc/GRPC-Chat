@@ -7,9 +7,18 @@ services:
     volumes:
       - ./envoy-proxy.yaml:/etc/envoy/envoy.yaml
     depends_on:
-      - grpc_chat
+      - grpc_chat_backend
 
-  grpc_chat:
-    build: .
+  grpc_chat_backend:
+    build:
+      context: .
+      dockerfile: Dockerfile.backend
+
+  grpc_chat_frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile.frontend
+    volumes:
+      - ./web/grpc-chat-app/:/app
     ports:
-      - 50051:50051
+      - 3000:80

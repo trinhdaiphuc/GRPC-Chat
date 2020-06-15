@@ -42,4 +42,4 @@ static_resources:
       type: logical_dns
       lb_policy: round_robin
       http2_protocol_options: {}
-      hosts: [{ socket_address: { address: grpc_chat, port_value: 50051 }}]
+      hosts: [{ socket_address: { address: grpc_chat_backend, port_value: 50051 }}]

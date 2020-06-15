@@ -1,27 +1,23 @@
-import React, {useEffect, useState} from 'react';
+import React, {useContext, useEffect, useState} from 'react';
 import './App.css';
 import Title from "./Title";
 import MessageList from "./MessagesList";
 import SendMessageForm from "./SendMessageForm";
 import {GrpcChatClient} from "./protos/service_grpc_web_pb";
 import {Connect, Message, User} from "./protos/service_pb"
-import {v4 as uuidv4} from 'uuid';
+import {v4 as uuidV4} from 'uuid';
+import {GlobalContext} from "./Context";
 
 
 const App = () => {
-    const [message, setMessage] = useState({});
-    const [stream, setStream] = useState({});
-    const [messageList, setMessageList] = useState([])
     const [user, setUser] = useState({});
     const [userGrpc, setUserGrpc] = useState({});
     const [grpcChatService, setGrpcChatService] = useState({});
+    const {addMessages} = useContext(GlobalContext);
 
     const sendMessage = (text, roomId) => {
-        const id = uuidv4();
-        const newMessageList = messageList;
-        const newMessage = {id, text}
-        newMessageList.push(newMessage);
-        setMessageList(newMessageList);
+        const id = uuidV4();
+        const newMessage = {id, user: user.name, text}
         const messageGrpc = new Message();
         messageGrpc.setUser(userGrpc);
         messageGrpc.setContent(text);
@@ -41,7 +37,7 @@ const App = () => {
     }, [])
 
     const onSubmitName = (name) => {
-        const id = uuidv4();
+        const id = uuidV4();
         setUser({id, name});
         const request = new Connect();
         const newUserGrpc = new User();
@@ -50,33 +46,22 @@ const App = () => {
         setUserGrpc(newUserGrpc);
         request.setUser(newUserGrpc);
         request.setActive(true);
-        const newStream = grpcChatService.createStream(request);
-        setStream(newStream);
-        newStream.on('data', (response) => {
-            const newMessageList = messageList;
-            const newMessage = {id: response.getId(), text: response.getContent()}
-            newMessageList.push(newMessage);
-            setMessageList(newMessageList);
+        const stream = grpcChatService.createStream(request);
+        stream.on('data', (response) => {
+            const newMessage = {
+                id: response.getId(),
+                user: response.getUser().getName(),
+                text: response.getContent()
+            }
+            console.log("Message: ", newMessage)
+            addMessages(newMessage);
         });
     }
-
-    useEffect(() => {
-        if (!stream) {
-            stream.on('data', (response) => {
-                const newMessageList = messageList;
-                const newMessage = {id: response.getId(), text: response.getContent()}
-                newMessageList.push(newMessage);
-                setMessageList(newMessageList);
-            });
-        }
-    }, [stream, messageList])
-
 
     return (
         <div className="app">
             <Title onSubmitName={(name) => onSubmitName(name)}/>
-            <MessageList
-                messages={messageList}/>
+            <MessageList/>
             <SendMessageForm
                 sendMessage={(text, roomId) => sendMessage(text, roomId)}/>
         </div>

@@ -1,0 +1,24 @@
+FROM node:alpine as build
+
+WORKDIR /app
+
+COPY web/grpc-chat-app/ /app
+# add the node_modules folder to $PATH
+ENV PATH /app/node_modules/.bin:$PATH
+# install and cache dependencies
+RUN npm install
+#build the project for production
+RUN npm run build
+
+FROM nginx:alpine
+# copy the build folder from react to the root of nginx (www)
+COPY --from=build /app/build /usr/share/nginx/html
+
+RUN rm /etc/nginx/conf.d/default.conf
+# replace with custom one
+COPY web/grpc-chat-app/deployments/nginx.conf /etc/nginx/conf.d
+# --------- /only for those using react router ----------
+# expose port 80 to the outer world
+EXPOSE 80
+# start nginx
+CMD ["nginx", "-g", "daemon off;"]
