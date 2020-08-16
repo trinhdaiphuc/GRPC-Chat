@@ -19,12 +19,15 @@ pipeline {
                 sh 'go version'
                 sh 'go get -u golang.org/x/lint/golint'
                 sh 'go mod download'
-                echo 'Running vetting'
-                sh 'go vet ./...'
-                echo 'Running linting'
                 sh 'golint ./...'
-                echo 'Running test'
-                sh 'go test -v ./...'
+                withEnv(["PATH+GO=${GOPATH}/bin"]){
+                    echo 'Running vetting'
+                    sh 'go vet ./...'
+                    echo 'Running linting'
+                    sh 'golint ./...'
+                    echo 'Running test'
+                    sh 'go test -v ./...'
+                }
             }
         }
         
