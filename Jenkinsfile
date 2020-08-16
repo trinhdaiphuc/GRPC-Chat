@@ -3,7 +3,9 @@ pipeline {
 
     stages {
         stage('Test') {
-            agent any
+            agent any {
+                args '-u 0:0 -v /tmp:/root/.cache'
+            }
             tools {
                 go 'go1.14'
             }
@@ -16,6 +18,7 @@ pipeline {
                 echo 'Installing dependencies'
                 sh 'go version'
                 sh 'go get -u golang.org/x/lint/golint'
+                sh 'go mod download'
                 withEnv(["PATH+GO=${GOPATH}/bin"]){
                     echo 'Running vetting'
                     sh 'go vet ./...'
