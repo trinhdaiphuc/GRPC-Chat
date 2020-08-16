@@ -3,11 +3,11 @@ pipeline {
 
     stages {
         stage('Test') {
-            agent any {
-                args '-u 0:0 -v /tmp:/root/.cache'
-            }
-            tools {
-                go 'go1.14'
+            agent {
+                docker {
+                    image 'golang:1.14-alpine'
+                    args '-u 0:0 -v /tmp:/root/.cache'
+                }
             }
             environment {
                 GO114MODULE = 'on'
