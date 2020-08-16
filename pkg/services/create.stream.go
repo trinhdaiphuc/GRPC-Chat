@@ -5,6 +5,7 @@ import (
 	"github.com/trinhdaiphuc/GRPC-Chat/internal/gen/chat/proto"
 )
 
+// CreateStream is a service use for create a stream connect to client
 func (s *GrpcChatServer) CreateStream(req *proto.Connect, stream proto.GrpcChat_CreateStreamServer) error {
 	logrus.Debug("Service create stream with request: ", req.GetUser())
 	conn := &Connection{

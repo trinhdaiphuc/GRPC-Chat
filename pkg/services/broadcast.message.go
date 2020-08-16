@@ -9,11 +9,12 @@ import (
 	"google.golang.org/protobuf/types/known/emptypb"
 )
 
+// BroadcastMessage is a service use for broadcasting message to all user
 func (s *GrpcChatServer) BroadcastMessage(ctx context.Context, msg *proto.Message) (*emptypb.Empty, error) {
 	logrus.Debug("Service broadcast message")
 	wait := sync.WaitGroup{}
 	done := make(chan int)
-	
+
 	for _, conn := range s.Connection {
 		wait.Add(1)
 

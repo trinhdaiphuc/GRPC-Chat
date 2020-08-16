@@ -27,7 +27,7 @@ func main() {
 	listener, err := net.Listen("tcp", ":50051")
 
 	if err != nil {
-		logrus.Fatal("error creating the server %v", err)
+		logrus.Fatalf("error creating the server %v", err)
 	}
 
 	logrus.Info("Starting server at port :8080")
@@ -35,7 +35,7 @@ func main() {
 
 	go func() {
 		if err := grpcServer.Serve(listener); err != nil {
-			logrus.Fatal("Failed to serve: %v", err)
+			logrus.Fatalf("Failed to serve: %v", err)
 		}
 	}()
 
