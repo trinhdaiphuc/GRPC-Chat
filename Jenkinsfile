@@ -1,32 +1,21 @@
 pipeline {
     agent none
-    tools {
-        go 'go1.14'
-    }
-    environment {
-        GO114MODULE = 'on'
-        CGO_ENABLED = 0 
-        GOPATH = "${JENKINS_HOME}/jobs/${JOB_NAME}/builds/${BUILD_ID}"
-    }
-    stages ('Test'){
-        agent any        
-        stage('Pre Test') {
+
+    stages {
+        stage('Test') {
+            agent any
+            tools {
+                go 'go1.14'
+            }
+            environment {
+                GO114MODULE = 'on'
+                CGO_ENABLED = 0 
+                GOPATH = "${JENKINS_HOME}/jobs/${JOB_NAME}/builds/${BUILD_ID}"
+            }
             steps {
                 echo 'Installing dependencies'
                 sh 'go version'
                 sh 'go get -u golang.org/x/lint/golint'
-            }
-        }
-        
-        stage('Build') {
-            steps {
-                echo 'Compiling and building'
-                sh 'go build cmd/main.go'
-            }
-        }
-
-        stage('Test') {
-            steps {
                 withEnv(["PATH+GO=${GOPATH}/bin"]){
                     echo 'Running vetting'
                     sh 'go vet ./...'
