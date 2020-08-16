@@ -18,8 +18,8 @@ pipeline {
                 echo 'Installing dependencies'
                 sh 'go version'
                 sh 'go get -u golang.org/x/lint/golint'
+                echo '$GOROOT'
                 sh 'go mod download'
-                sh 'golint ./...'
                 withEnv(["PATH+GO=${GOPATH}/bin"]){
                     echo 'Running vetting'
                     sh 'go vet ./...'
