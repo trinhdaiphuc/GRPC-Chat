@@ -3,16 +3,14 @@ pipeline {
 
     stages {
         stage('Test') {
-            agent {
-                docker {
-                    image 'golang:1.14-alpine'
-                    args '-u 0:0 -v /tmp:/root/.cache'
-                }
+            agent any
+            tools {
+                go 'go1.14'
             }
             environment {
                 GO114MODULE = 'on'
                 CGO_ENABLED = 0 
-                GOPATH = "${WORKSPACE}"
+                GOPATH = "${JENKINS_HOME}/jobs/${JOB_NAME}/builds/${BUILD_ID}"
             }
             steps {
                 echo 'Installing dependencies'
