@@ -1,5 +1,5 @@
 pipeline {
-    agent any
+    agent none
     tools {
         go 'go1.14'
     }
@@ -8,7 +8,8 @@ pipeline {
         CGO_ENABLED = 0 
         GOPATH = "${JENKINS_HOME}/jobs/${JOB_NAME}/builds/${BUILD_ID}"
     }
-    stages {        
+    stages ('Test'){
+        agent any        
         stage('Pre Test') {
             steps {
                 echo 'Installing dependencies'
@@ -20,7 +21,7 @@ pipeline {
         stage('Build') {
             steps {
                 echo 'Compiling and building'
-                sh 'go build'
+                sh 'go build cmd/main.go'
             }
         }
 
@@ -28,11 +29,11 @@ pipeline {
             steps {
                 withEnv(["PATH+GO=${GOPATH}/bin"]){
                     echo 'Running vetting'
-                    sh 'go vet .'
+                    sh 'go vet ./...'
                     echo 'Running linting'
-                    sh 'golint .'
+                    sh 'golint ./...'
                     echo 'Running test'
-                    sh 'cd test && go test -v'
+                    sh 'go test -v ./...'
                 }
             }
         }
