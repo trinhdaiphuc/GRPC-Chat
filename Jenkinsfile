@@ -5,14 +5,19 @@ pipeline {
         stage('Test') {
             agent {
                 docker {
-                    image 'go:1.14-alpine'
+                    image 'golang:1.14-alpine'
                     args '-u 0:0 -v /tmp:/root/.cache'
                 }
+            }
+            environment {
+                GOROOT = '/usr/local/go'
+                GOPATH = '/app'
             }
             steps {
                 echo 'Installing dependencies'
                 sh 'go version'
                 sh 'go get -u golang.org/x/lint/golint'
+                sh 'golint ./...'
                 sh 'go mod download'
                 withEnv(["PATH+GO=${GOPATH}/bin"]){
                     echo 'Running vetting'
