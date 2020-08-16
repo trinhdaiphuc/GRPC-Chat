@@ -11,22 +11,20 @@ pipeline {
             }
             environment {
                 GO114MODULE = 'on'
-                CGO_ENABLED = 0 
-                GOPATH = "${JENKINS_HOME}/jobs/${JOB_NAME}/builds/${BUILD_ID}"
+                CGO_ENABLED = 0
             }
             steps {
+                withEnv(["GOPATH=${WORKSPACE}", "PATH+GO=${GOPATH}/bin"]){
                 echo 'Installing dependencies'
                 sh 'go version'
                 sh 'go get -u golang.org/x/lint/golint'
-                echo '$GOROOT'
                 sh 'go mod download'
-                withEnv(["PATH+GO=${GOPATH}/bin"]){
-                    echo 'Running vetting'
-                    sh 'go vet ./...'
-                    echo 'Running linting'
-                    sh 'golint ./...'
-                    echo 'Running test'
-                    sh 'go test -v ./...'
+                echo 'Running vetting'
+                sh 'go vet ./...'
+                echo 'Running linting'
+                sh 'golint ./...'
+                echo 'Running test'
+                sh 'go test -v ./...'
                 }
             }
         }
