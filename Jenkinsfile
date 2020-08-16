@@ -10,19 +10,17 @@ pipeline {
                 }
             }
             environment {
-                GOROOT = '/usr/local/go'
-                GOPATH = '/app'
+                GO114MODULE = 'on'
+                CGO_ENABLED = 0 
+                GOPATH = "${JENKINS_HOME}/jobs/${JOB_NAME}/builds/${BUILD_ID}"
             }
             steps {
                 echo 'Installing dependencies'
                 sh 'go version'
-                sh 'go get -u golang.org/x/lint/golint'
                 sh 'go mod download'
                 withEnv(["PATH+GO=${GOPATH}/bin"]){
                     echo 'Running vetting'
                     sh 'go vet ./...'
-                    echo 'Running linting'
-                    sh 'golint ./...'
                     echo 'Running test'
                     sh 'go test -v ./...'
                 }
