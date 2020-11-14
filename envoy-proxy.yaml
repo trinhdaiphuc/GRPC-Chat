@@ -7,13 +7,15 @@ static_resources:
   listeners:
     - name: service-grpc-chat-listeners
       address:
-        socket_address: { address: 0.0.0.0, port_value: 51051 }
+        socket_address: 
+          address: 0.0.0.0
+          port_value: 51051
       filter_chains:
         - filters:
             - name: envoy.filters.network.http_connection_manager
               config:
                 stat_prefix: ingress_http
-                codec_type: AUTO
+                codec_type: auto
                 route_config:
                   name: local_route
                   virtual_hosts:

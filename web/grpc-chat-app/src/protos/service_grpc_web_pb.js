@@ -218,7 +218,7 @@ proto.grpc.chat.GrpcChatClient.prototype.broadcastMessage =
  * @param {?Object<string, string>} metadata User defined
  *     call metadata
  * @return {!Promise<!proto.google.protobuf.Empty>}
- *     A native promise that resolves to the response
+ *     Promise that resolves to the response
  */
 proto.grpc.chat.GrpcChatPromiseClient.prototype.broadcastMessage =
     function(request, metadata) {

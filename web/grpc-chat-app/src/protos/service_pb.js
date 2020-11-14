@@ -7,7 +7,9 @@
  * @public
  */
 // GENERATED CODE -- DO NOT EDIT!
+
 /* eslint-disable */
+// @ts-nocheck
 
 var jspb = require('google-protobuf');
 var goog = jspb;
