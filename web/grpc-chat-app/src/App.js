@@ -17,7 +17,6 @@ const App = () => {
 
     const sendMessage = (text, roomId) => {
         const id = uuidV4();
-        const newMessage = {id, user: user.name, text}
         const messageGrpc = new Message();
         messageGrpc.setUser(userGrpc);
         messageGrpc.setContent(text);

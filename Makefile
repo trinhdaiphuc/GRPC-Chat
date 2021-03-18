@@ -1,5 +1,5 @@
 install-protoc-gen-go:
-	go get -u github.com/golang/protobuf
+	go get -u github.com/golang/protobuf/protoc-gen-go
 
 install-protoc-gen-grpc-web:
 	wget https://github.com/grpc/grpc-web/releases/download/1.2.1/protoc-gen-grpc-web-1.2.1-linux-x86_64

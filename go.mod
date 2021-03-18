@@ -3,12 +3,12 @@ module github.com/trinhdaiphuc/GRPC-Chat
 go 1.13
 
 require (
-	github.com/golang/protobuf v1.4.3
-	github.com/sirupsen/logrus v1.7.0
-	golang.org/x/net v0.0.0-20201110031124-69a78807bb2b
-	golang.org/x/sys v0.0.0-20201113233024-12cec1faf1ba // indirect
-	golang.org/x/text v0.3.4 // indirect
-	google.golang.org/genproto v0.0.0-20201113130914-ce600e9a6f9e // indirect
-	google.golang.org/grpc v1.33.2
-	google.golang.org/protobuf v1.25.0
+	github.com/golang/protobuf v1.5.1
+	github.com/sirupsen/logrus v1.8.1
+	golang.org/x/net v0.0.0-20210316092652-d523dce5a7f4
+	golang.org/x/sys v0.0.0-20210317225723-c4fcb01b228e // indirect
+	golang.org/x/text v0.3.5 // indirect
+	google.golang.org/genproto v0.0.0-20210317182105-75c7a8546eb9 // indirect
+	google.golang.org/grpc v1.36.0
+	google.golang.org/protobuf v1.26.0
 )
