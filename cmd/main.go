@@ -6,17 +6,16 @@ import (
 	"os/signal"
 
 	"github.com/sirupsen/logrus"
-	"github.com/trinhdaiphuc/GRPC-Chat/internal/gen/chat/proto"
-	"github.com/trinhdaiphuc/GRPC-Chat/pkg/services"
+	"github.com/trinhdaiphuc/GRPC-Chat/internal/services"
+	"github.com/trinhdaiphuc/GRPC-Chat/pkg/api/chat"
 	"google.golang.org/grpc"
 )
 
+var defaultPort = "50051"
+
 func main() {
-	connections := []*services.Connection{}
-	grpcChatServer := &services.GrpcChatServer{
-		Connection: connections,
-	}
 	grpcServer := grpc.NewServer()
+	grpcChatService := services.NewGrpcChatServer()
 
 	logrus.SetFormatter(&logrus.TextFormatter{
 		FullTimestamp: false,
@@ -24,14 +23,13 @@ func main() {
 
 	logrus.SetLevel(logrus.DebugLevel)
 
-	listener, err := net.Listen("tcp", ":50051")
-
+	listener, err := net.Listen("tcp", ":"+defaultPort)
 	if err != nil {
 		logrus.Fatalf("error creating the server %v", err)
 	}
 
-	logrus.Info("Starting server at port :8080")
-	proto.RegisterGrpcChatServer(grpcServer, grpcChatServer)
+	logrus.Infof("Starting server at port :%s", defaultPort)
+	chat.RegisterGrpcChatServer(grpcServer, grpcChatService)
 
 	go func() {
 		if err := grpcServer.Serve(listener); err != nil {
@@ -40,9 +38,7 @@ func main() {
 	}()
 
 	c := make(chan os.Signal)
-
 	signal.Notify(c, os.Interrupt)
-
 	<-c
 
 	// After receiving CTRL+C Properly stop the server
@@ -51,6 +47,5 @@ func main() {
 	if err := listener.Close(); err != nil {
 		logrus.Error("Error when close listener ", err)
 	}
-	logrus.Info("Closing MongoDB connection")
 	logrus.Info("Done.")
 }

@@ -12,22 +12,23 @@ import (
 	"time"
 
 	"github.com/golang/protobuf/ptypes"
-	"github.com/trinhdaiphuc/GRPC-Chat/internal/gen/chat/proto"
+	"github.com/trinhdaiphuc/GRPC-Chat/pkg/api/chat"
 	"golang.org/x/net/context"
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/credentials/insecure"
 )
 
-var client proto.GrpcChatClient
+var client chat.GrpcChatClient
 var wait *sync.WaitGroup
 
 func init() {
 	wait = &sync.WaitGroup{}
 }
 
-func connect(user *proto.User) error {
+func connect(user *chat.User) error {
 	var streamerror error
 
-	stream, err := client.CreateStream(context.Background(), &proto.Connect{
+	stream, err := client.CreateStream(context.Background(), &chat.Connect{
 		User:   user,
 		Active: true,
 	})
@@ -37,7 +38,7 @@ func connect(user *proto.User) error {
 	}
 
 	wait.Add(1)
-	go func(str proto.GrpcChat_CreateStreamClient) {
+	go func(str chat.GrpcChat_CreateStreamClient) {
 		defer wait.Done()
 
 		for {
@@ -57,20 +58,19 @@ func connect(user *proto.User) error {
 
 func main() {
 	timestamp := time.Now()
-	done := make(chan int)
 
-	name := flag.String("N", "Anon", "The name of the user")
+	name := flag.String("n", "Anon", "The name of the user")
 	flag.Parse()
 
 	id := sha256.Sum256([]byte(timestamp.String() + *name))
 
-	conn, err := grpc.Dial("localhost:8080", grpc.WithInsecure())
+	conn, err := grpc.Dial("localhost:50051", grpc.WithTransportCredentials(insecure.NewCredentials()))
 	if err != nil {
 		log.Fatalf("Couldnt connect to service: %v", err)
 	}
 
-	client = proto.NewGrpcChatClient(conn)
-	user := &proto.User{
+	client = chat.NewGrpcChatClient(conn)
+	user := &chat.User{
 		Id:   hex.EncodeToString(id[:]),
 		Name: *name,
 	}
@@ -84,7 +84,7 @@ func main() {
 		scanner := bufio.NewScanner(os.Stdin)
 		for scanner.Scan() {
 			timestampProto, err := ptypes.TimestampProto(timestamp)
-			msg := &proto.Message{
+			msg := &chat.Message{
 				Id:        user.Id,
 				Content:   scanner.Text(),
 				User:      user,
@@ -100,10 +100,5 @@ func main() {
 
 	}()
 
-	go func() {
-		wait.Wait()
-		close(done)
-	}()
-
-	<-done
+	wait.Wait()
 }

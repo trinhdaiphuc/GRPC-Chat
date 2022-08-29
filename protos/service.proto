@@ -1,7 +1,7 @@
 syntax = "proto3";
 
 package grpc.chat;
-option go_package = "chat/proto";
+option go_package = "./chat";
 
 import "google/protobuf/timestamp.proto";
 import "google/protobuf/empty.proto";

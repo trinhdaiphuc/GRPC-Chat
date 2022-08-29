@@ -5,20 +5,19 @@ import (
 	"sync"
 
 	"github.com/sirupsen/logrus"
-	"github.com/trinhdaiphuc/GRPC-Chat/internal/gen/chat/proto"
+	"github.com/trinhdaiphuc/GRPC-Chat/pkg/api/chat"
 	"google.golang.org/protobuf/types/known/emptypb"
 )
 
 // BroadcastMessage is a service use for broadcasting message to all user
-func (s *GrpcChatServer) BroadcastMessage(ctx context.Context, msg *proto.Message) (*emptypb.Empty, error) {
+func (s *GrpcChatService) BroadcastMessage(ctx context.Context, msg *chat.Message) (*emptypb.Empty, error) {
 	logrus.Debug("Service broadcast message")
 	wait := sync.WaitGroup{}
-	done := make(chan int)
 
 	for _, conn := range s.Connection {
 		wait.Add(1)
 
-		go func(msg *proto.Message, conn *Connection) {
+		go func(msg *chat.Message, conn *Connection) {
 			defer wait.Done()
 
 			if conn.Active {
@@ -34,11 +33,6 @@ func (s *GrpcChatServer) BroadcastMessage(ctx context.Context, msg *proto.Messag
 		}(msg, conn)
 	}
 
-	go func() {
-		wait.Wait()
-		close(done)
-	}()
-
-	<-done
+	wait.Wait()
 	return &emptypb.Empty{}, nil
 }

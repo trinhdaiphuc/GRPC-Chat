@@ -12,13 +12,11 @@ services:
   grpc_chat_backend:
     build:
       context: .
-      dockerfile: Dockerfile.backend
+      dockerfile: Dockerfile_backend
 
   grpc_chat_frontend:
     build:
       context: .
-      dockerfile: Dockerfile.frontend
-    volumes:
-      - ./web/grpc-chat-app/:/app
+      dockerfile: Dockerfile_frontend
     ports:
       - 3000:80
