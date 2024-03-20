@@ -13,7 +13,7 @@ COPY web /app
 #build the project for production
 RUN npm run build
 
-FROM nginx:1.25.3-alpine3.18
+FROM nginx:alpine
 # copy the build folder from react to the root of nginx (www)
 COPY --from=build /app/build /usr/share/nginx/html
 
